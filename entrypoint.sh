@@ -1,12 +1,9 @@
 #!/bin/sh -l
 
-GITHUB_TOKEN=$1
-BRANCH_NAME=$2
 WORKSPACE=/github/workspace
-CONFIGMAPS_TARGET_PATH=$3
-CONFIGMAPS_TARGET=${WORKSPACE}/${CONFIGMAPS_TARGET_PATH}
+CONFIGMAPS_TARGET=${WORKSPACE}/${INPUT_TARGET_PATH}
 
-if [ -z "${CONFIGMAPS_TARGET_PATH}" ]; then
+if [ -z "${INPUT_TARGET_PATH}" ]; then
    export CONFIGMAPS_TARGET=${WORKSPACE}/_private/configmaps
 fi
 
@@ -20,13 +17,13 @@ PERMISSION_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/model-access-permissions.configma
 ROLE_DIR=${WORKSPACE}/configs/roles
 ROLE_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/rbac-config.yml
 
-if [ -z "${GITHUB_TOKEN}" ]; then
-    echo "error: no GITHUB_TOKEN supplied"
+if [ -z "${INPUT_TOKEN}" ]; then
+    echo "error: no INPUT_TOKEN supplied"
     exit 1
 fi
 
-if [ -z "${BRANCH_NAME}" ]; then
-   export BRANCH_NAME=main
+if [ -z "${INPUT_BRANCH_NAME}" ]; then
+   export INPUT_BRANCH_NAME=main
 fi
 
 # create configmaps
@@ -41,14 +38,14 @@ do
 done
 
 # push the changes
-remote_repo="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+remote_repo="https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
-git checkout ${BRANCH_NAME}
+git checkout ${INPUT_BRANCH_NAME}
 git add .
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
-git pull --rebase origin ${BRANCH_NAME}
-git push origin ${BRANCH_NAME}
+git pull --rebase origin ${INPUT_BRANCH_NAME}
+git push origin ${INPUT_BRANCH_NAME}
