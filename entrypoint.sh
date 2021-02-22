@@ -3,7 +3,13 @@
 GITHUB_TOKEN=$1
 BRANCH_NAME=$2
 WORKSPACE=/github/workspace
-CONFIGMAPS_TARGET=${WORKSPACE}/_private/configmaps
+CONFIGMAPS_TARGET_PATH=$3
+CONFIGMAPS_TARGET=${WORKSPACE}/${CONFIGMAPS_TARGET_PATH}
+
+if [ -z "${CONFIGMAPS_TARGET_PATH}" ]; then
+   export CONFIGMAPS_TARGET=${WORKSPACE}/_private/configmaps
+fi
+
 mkdir -p $CONFIGMAPS_TARGET
 
 # permission setup

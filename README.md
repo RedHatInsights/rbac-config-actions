@@ -20,4 +20,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch_name: <BRANCH_NAME> # optional - defaults to `main`
+          target_path: /_your/destination/path/ # optional - defaults to `/_private/configmaps/`
 ```
