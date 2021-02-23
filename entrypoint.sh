@@ -38,14 +38,12 @@ do
 done
 
 # push the changes
-remote_repo="https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
-git checkout ${INPUT_BRANCH_NAME}
 git add .
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
-git pull --rebase origin ${INPUT_BRANCH_NAME}
+git pull --rebase
 git push origin ${INPUT_BRANCH_NAME}
