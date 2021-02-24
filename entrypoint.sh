@@ -42,6 +42,7 @@ git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
+git checkout ${INPUT_BRANCH_NAME}
 git add .
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
