@@ -26,6 +26,14 @@ if [ -z "${INPUT_BRANCH_NAME}" ]; then
    export INPUT_BRANCH_NAME=main
 fi
 
+git config http.sslVerify false
+git config user.name "[GitHub] - Automated Action"
+git config user.email "actions@github.com"
+
+git fetch
+git checkout ${INPUT_BRANCH_NAME}
+git pull origin ${INPUT_BRANCH_NAME} --rebase
+
 # create configmaps
 kubectl create configmap model-access-permissions --from-file $PERMISSION_DIR --dry-run=client --validate=false -o yaml > $PERMISSION_CONFIGMAP_FILE
 kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --validate=false -o yaml > $ROLE_CONFIGMAP_FILE
@@ -34,17 +42,11 @@ kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --va
 for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
 do
   echo '  annotations:
-      qontract.recycle: "true"' >> $f
+    qontract.recycle: "true"' >> $f
 done
 
 # push the changes
-git config http.sslVerify false
-git config user.name "[GitHub] - Automated Action"
-git config user.email "actions@github.com"
-
-git checkout ${INPUT_BRANCH_NAME}
 git add .
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
-git pull --rebase
 git push origin ${INPUT_BRANCH_NAME}
