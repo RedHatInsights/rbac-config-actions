@@ -34,9 +34,20 @@ git fetch
 git checkout ${INPUT_BRANCH_NAME}
 git pull origin ${INPUT_BRANCH_NAME} --rebase
 
+# create templates
+for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
+do
+  echo -n 'kind: Template
+apiVersion: v1
+objects:
+- ' > $f
+done
+
+indent() { sed '2,$s/^/  /'; }
+
 # create configmaps
-kubectl create configmap model-access-permissions --from-file $PERMISSION_DIR --dry-run=client --validate=false -o yaml > $PERMISSION_CONFIGMAP_FILE
-kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --validate=false -o yaml > $ROLE_CONFIGMAP_FILE
+kubectl create configmap model-access-permissions --from-file $PERMISSION_DIR --dry-run=client --validate=false -o yaml | indent >> $PERMISSION_CONFIGMAP_FILE
+kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --validate=false -o yaml | indent >> $ROLE_CONFIGMAP_FILE
 
 # add annotations
 for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
