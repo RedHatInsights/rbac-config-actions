@@ -7,16 +7,6 @@ if [ -z "${INPUT_TARGET_PATH}" ]; then
    export CONFIGMAPS_TARGET=${WORKSPACE}/_private/configmaps
 fi
 
-mkdir -p $CONFIGMAPS_TARGET
-
-# permission setup
-PERMISSION_DIR=${WORKSPACE}/configs/permissions
-PERMISSION_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/model-access-permissions.configmap.yml
-
-# role setup
-ROLE_DIR=${WORKSPACE}/configs/roles
-ROLE_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/rbac-config.yml
-
 if [ -z "${INPUT_TOKEN}" ]; then
     echo "error: no INPUT_TOKEN supplied"
     exit 1
@@ -34,26 +24,40 @@ git fetch
 git checkout ${INPUT_BRANCH_NAME}
 git pull origin ${INPUT_BRANCH_NAME} --rebase
 
-# create templates
-for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
+indent() { sed '2,$s/^/  /'; }
+env() { sed 's/configs\///g'; }
+
+for d in configs/*
 do
-  echo -n 'kind: Template
+  ENV=$(echo "$d" | env)
+
+  mkdir -p $CONFIGMAPS_TARGET/${ENV}
+
+  PERMISSION_DIR=${WORKSPACE}/configs/${ENV}/permissions
+  PERMISSION_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/${ENV}/model-access-permissions.configmap.yml
+
+  ROLE_DIR=${WORKSPACE}/configs/${ENV}/roles
+  ROLE_CONFIGMAP_FILE=${CONFIGMAPS_TARGET}/${ENV}/rbac-config.yml
+
+  # create templates
+  for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
+  do
+    echo -n 'kind: Template
 apiVersion: v1
 objects:
 - ' > $f
-done
+  done
 
-indent() { sed '2,$s/^/  /'; }
+  # create configmaps
+  kubectl create configmap model-access-permissions --from-file $PERMISSION_DIR --dry-run=client --validate=false -o yaml | indent >> $PERMISSION_CONFIGMAP_FILE
+  kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --validate=false -o yaml | indent >> $ROLE_CONFIGMAP_FILE
 
-# create configmaps
-kubectl create configmap model-access-permissions --from-file $PERMISSION_DIR --dry-run=client --validate=false -o yaml | indent >> $PERMISSION_CONFIGMAP_FILE
-kubectl create configmap rbac-config --from-file $ROLE_DIR --dry-run=client --validate=false -o yaml | indent >> $ROLE_CONFIGMAP_FILE
-
-# add annotations
-for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
-do
-  echo '  annotations:
+  # add annotations
+  for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
+  do
+    echo '  annotations:
     qontract.recycle: "true"' >> $f
+  done
 done
 
 # push the changes
