@@ -20,10 +20,6 @@ git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
-git fetch
-git checkout ${INPUT_BRANCH_NAME}
-git pull origin ${INPUT_BRANCH_NAME} --rebase
-
 indent() { sed '2,$s/^/  /'; }
 
 for ENV in ci qa stage prod
@@ -56,6 +52,10 @@ objects:
     qontract.recycle: "true"' >> $f
   done
 done
+
+git fetch
+git checkout ${INPUT_BRANCH_NAME}
+git pull origin ${INPUT_BRANCH_NAME} --rebase
 
 # push the changes
 git add .
