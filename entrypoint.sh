@@ -25,12 +25,9 @@ git checkout ${INPUT_BRANCH_NAME}
 git pull origin ${INPUT_BRANCH_NAME} --rebase
 
 indent() { sed '2,$s/^/  /'; }
-env() { sed 's/configs\///g'; }
 
-for d in configs/*
+for ENV in ci qa stage prod
 do
-  ENV=$(echo "$d" | env)
-
   mkdir -p $CONFIGMAPS_TARGET/${ENV}
 
   PERMISSION_DIR=${WORKSPACE}/configs/${ENV}/permissions
