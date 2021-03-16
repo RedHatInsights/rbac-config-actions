@@ -20,6 +20,11 @@ git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
+# sync the input branch
+git checkout ${INPUT_BRANCH_NAME}
+git pull origin ${INPUT_BRANCH_NAME}
+git checkout -
+
 indent() { sed '2,$s/^/  /'; }
 
 for ENV in ci qa stage prod
@@ -51,8 +56,6 @@ objects:
     echo '    annotations:
       qontract.recycle: "true"' >> $f
   done
-
-  cat "${CONFIGMAPS_TARGET}/ci/rbac-config.yml"
 done
 
 git fetch
