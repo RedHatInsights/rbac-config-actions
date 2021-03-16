@@ -21,8 +21,9 @@ git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
 # sync the input branch
+git fetch
 git checkout ${INPUT_BRANCH_NAME}
-git pull origin ${INPUT_BRANCH_NAME}
+git pull origin ${INPUT_BRANCH_NAME} --rebase
 git checkout -
 
 indent() { sed '2,$s/^/  /'; }
@@ -58,9 +59,7 @@ objects:
   done
 done
 
-git fetch
 git checkout ${INPUT_BRANCH_NAME}
-git pull origin ${INPUT_BRANCH_NAME} --rebase
 
 # push the changes
 git add .
