@@ -24,7 +24,7 @@ git config user.email "actions@github.com"
 git fetch
 git checkout ${INPUT_BRANCH_NAME}
 git pull origin ${INPUT_BRANCH_NAME} --rebase
-git rebase master
+git checkout -
 
 indent() { sed '2,$s/^/  /'; }
 
@@ -58,6 +58,8 @@ objects:
       qontract.recycle: "true"' >> $f
   done
 done
+
+git checkout ${INPUT_BRANCH_NAME}
 
 # push the changes
 git add .
