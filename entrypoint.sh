@@ -48,9 +48,11 @@ objects:
   # add annotations
   for f in $PERMISSION_CONFIGMAP_FILE $ROLE_CONFIGMAP_FILE
   do
-    echo '  annotations:
-    qontract.recycle: "true"' >> $f
+    echo '    annotations:
+      qontract.recycle: "true"' >> $f
   done
+
+  cat "${CONFIGMAPS_TARGET}/ci/rbac-config.yml"
 done
 
 git fetch
