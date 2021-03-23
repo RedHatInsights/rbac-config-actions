@@ -24,6 +24,7 @@ git config user.email "actions@github.com"
 git fetch
 git checkout ${INPUT_BRANCH_NAME}
 git pull origin ${INPUT_BRANCH_NAME} --rebase
+git rebase -
 git checkout -
 
 indent() { sed '2,$s/^/  /'; }
