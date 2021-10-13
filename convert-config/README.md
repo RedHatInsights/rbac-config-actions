@@ -1,6 +1,5 @@
-# RBAC Post-commit Action
-A GitHub action to run post-commit actions for RBAC config. This will generate
-ConfigMaps from the JSON config for permissions and roles.
+# RBAC Convert Config Action
+This will generate configMaps from the JSON config for permissions and roles.
 
 Usage:
 ```
@@ -16,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Converting JSON config to ConfigMaps
-        uses: coderbydesign/rbac-config-post-commit-action@main
+        uses: RedHatInsights/rbac-config-actions/convert-config@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch_name: <BRANCH_NAME> # optional - defaults to `main`
