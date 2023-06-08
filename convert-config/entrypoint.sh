@@ -16,6 +16,7 @@ if [ -z "${INPUT_BRANCH_NAME}" ]; then
    export INPUT_BRANCH_NAME=main
 fi
 
+git config --global --add safe.directory "/github/workspace"
 git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
