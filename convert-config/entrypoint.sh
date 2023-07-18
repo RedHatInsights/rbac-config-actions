@@ -30,7 +30,7 @@ git checkout -
 
 indent() { sed '2,$s/^/  /'; }
 
-for ENV in stage prod fedramp-stage fedramp-prod
+for ENV in stage prod
 do
   mkdir -p $CONFIGMAPS_TARGET/${ENV}
 
