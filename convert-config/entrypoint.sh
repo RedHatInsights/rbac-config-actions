@@ -30,7 +30,7 @@ fi
 
 # sync the input branch
 git fetch
-git checkout -b "${INPUT_BRANCH_NAME}" --no-track origin/main
+git checkout -b "${INPUT_BRANCH_NAME}" --no-track origin/master
 
 indent() { sed '2,$s/^/  /'; }
 
