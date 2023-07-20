@@ -13,7 +13,7 @@ if [ -z "${INPUT_TOKEN}" ]; then
 fi
 
 if [ -z "${INPUT_BRANCH_NAME}" ]; then
-   export INPUT_BRANCH_NAME=main
+   export INPUT_BRANCH_NAME=configmaps
 fi
 
 git config --global --add safe.directory ${WORKSPACE}
@@ -21,12 +21,16 @@ git config http.sslVerify false
 git config user.name "[GitHub] - Automated Action"
 git config user.email "actions@github.com"
 
+# Remove configmaps branch from remote if it already exists.
+if [ "${INPUT_BRANCH_NAME}" != "main" ] || [  "${INPUT_BRANCH_NAME}" != "master" ]; then
+  if git ls-remote --exit-code --heads origin "${INPUT_BRANCH_NAME}" >/dev/null 2>&1; then
+    git push origin --delete "${INPUT_BRANCH_NAME}"
+  fi
+f
+
 # sync the input branch
 git fetch
-git checkout ${INPUT_BRANCH_NAME}
-git pull origin ${INPUT_BRANCH_NAME} --rebase
-git rebase -
-git checkout -
+git checkout -b "${INPUT_BRANCH_NAME}" --no-track origin/main
 
 indent() { sed '2,$s/^/  /'; }
 
@@ -60,8 +64,6 @@ objects:
       qontract.recycle: "true"' >> $f
   done
 done
-
-git checkout ${INPUT_BRANCH_NAME}
 
 # push the changes
 git add .
