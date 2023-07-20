@@ -26,7 +26,7 @@ if [ "${INPUT_BRANCH_NAME}" != "main" ] || [  "${INPUT_BRANCH_NAME}" != "master"
   if git ls-remote --exit-code --heads origin "${INPUT_BRANCH_NAME}" >/dev/null 2>&1; then
     git push origin --delete "${INPUT_BRANCH_NAME}"
   fi
-f
+fi
 
 # sync the input branch
 git fetch
