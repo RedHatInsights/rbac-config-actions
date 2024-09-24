@@ -1,5 +1,5 @@
-name: RBAC Post-commit Action
-description: Converts RBAC config JSON to configmaps
+name: Generate V1-Only Permissions Data
+description: Converts RBAC config permissions JSON to a KSIL file representing permissions declared in V1 but not yet migrated to the V2 model
 runs:
   using: docker
   image: Dockerfile
