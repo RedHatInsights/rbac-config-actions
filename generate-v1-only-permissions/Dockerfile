@@ -5,8 +5,8 @@ USER root
 RUN microdnf install -y tar gzip make which
 
 # install platform specific go version
-RUN curl -O -J  https://dl.google.com/go/go1.22.2.linux-${TARGETARCH}.tar.gz && \
-    tar -C /usr/local -xzf go1.22.2.linux-${TARGETARCH}.tar.gz && \
+RUN curl -O -J  https://dl.google.com/go/go1.22.7.linux-${TARGETARCH}.tar.gz && \
+    tar -C /usr/local -xzf go1.22.7.linux-${TARGETARCH}.tar.gz && \
     ln -s /usr/local/go/bin/go /usr/local/bin/go
 
 WORKDIR /workspace
