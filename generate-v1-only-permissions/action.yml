@@ -1,0 +1,17 @@
+name: RBAC Post-commit Action
+description: Converts RBAC config JSON to configmaps
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - "-ksl-src"
+    - ${{ inputs.ksl_src }}
+    - "-rbac-permissions-json"
+    - ${{ inputs.rbac_permissions }}
+inputs:
+  ksl_src:
+    description: Path to the KSL src directory for the job
+    required: true
+  rbac_permissions:
+    description: Path to the RBAC permissions directory for the job
+    required: true
