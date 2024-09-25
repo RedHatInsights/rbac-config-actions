@@ -17,6 +17,6 @@ jobs:
       - name: Run Generate V1-Only Permissions Data for stage
         uses: RedHatInsights/rbac-config-actions/generate-v1-only-permissions@main
         with:
-          ksl_src: /ksl/source/files/path/ # required
+          ksl: /ksl/project/files/path/ # required
           rbac_permissions: /json/source/files/path/ # required
 ```

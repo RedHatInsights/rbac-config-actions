@@ -4,13 +4,13 @@ runs:
   using: docker
   image: Dockerfile
   args:
-    - "-ksl-src"
-    - ${{ inputs.ksl_src }}
+    - "-ksl"
+    - ${{ inputs.ksl }}
     - "-rbac-permissions-json"
     - ${{ inputs.rbac_permissions }}
 inputs:
   ksl_src:
-    description: Path to the KSL src directory for the job
+    description: Path to the KSL project directory for the job
     required: true
   rbac_permissions:
     description: Path to the RBAC permissions directory for the job
