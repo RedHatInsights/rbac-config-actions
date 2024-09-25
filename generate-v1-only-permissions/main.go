@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	kslSrc := flag.String("ksl-src", "", "The path to the directory containing .ksl source files and .json precompiled files for the current environment.")
+	kslSrc := flag.String("ksl", "", "The path to the ksl project directory (where the migrated_apps.lst file is)")
 	rbacPermissions := flag.String("rbac-permissions-json", "", "The path to the directory containing RBAC permissions .json files for the current environment.")
 
 	flag.Parse()
@@ -26,25 +26,21 @@ func main() {
 		return
 	}
 
-	migratedPerms, err := v2.ExtractMigratedPermissions(*kslSrc)
+	migratedApps, err := v2.GetMigratedApps(*kslSrc)
 	if err != nil {
 		panic(err)
 	}
 
-	allPerms, err := v1.ExtractRBACPermissions(*rbacPermissions)
+	perms, err := v1.ExtractRBACPermissions(*rbacPermissions, migratedApps)
 	if err != nil {
 		panic(err)
 	}
 
-	v1OnlyPerms := make([]string, 0, len(allPerms))
-	for _, perm := range allPerms {
-		v2Perm := v1PermToV2Perm(perm)
-		if !migratedPerms[v2Perm] {
-			v1OnlyPerms = append(v1OnlyPerms, v2Perm)
-		}
+	for i, perm := range perms {
+		perms[i] = v1PermToV2Perm(perm)
 	}
 
-	v2.WriteV1OnlyPermissionsFile(*kslSrc, v1OnlyPerms)
+	v2.WriteV1OnlyPermissionsFile(*kslSrc, perms)
 }
 
 func v1PermToV2Perm(v1Perm string) string {

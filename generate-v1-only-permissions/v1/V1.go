@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-func ExtractRBACPermissions(rbacJSONPath string) ([]string, error) {
-	return extractPermissionsFromFolder(rbacJSONPath)
+func ExtractRBACPermissions(rbacJSONPath string, skipApps map[string]bool) ([]string, error) {
+	return extractPermissionsFromFolder(rbacJSONPath, skipApps)
 }
 
-func extractPermissionsFromFolder(path string) ([]string, error) {
+func extractPermissionsFromFolder(path string, skipApps map[string]bool) ([]string, error) {
 	permissions := []string{}
 
 	err := filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
@@ -25,7 +25,7 @@ func extractPermissionsFromFolder(path string) ([]string, error) {
 			return nil
 		}
 
-		perms, err := extractPermissionsFromFile(path)
+		perms, err := extractPermissionsFromFile(path, skipApps)
 		if err != nil {
 			return err
 		}
@@ -37,16 +37,20 @@ func extractPermissionsFromFolder(path string) ([]string, error) {
 	return permissions, err
 }
 
-func extractPermissionsFromFile(path string) ([]string, error) {
+func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]string, error) {
 	perms := []string{}
+
+	fileName := filepath.Base(path)
+	appName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
+
+	if skipApps[appName] {
+		return perms, nil
+	}
 
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-
-	fileName := filepath.Base(path)
-	appName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
 
 	file := permFile{}
 	json.Unmarshal(data, &file)
