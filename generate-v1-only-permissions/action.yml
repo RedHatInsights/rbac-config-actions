@@ -9,7 +9,7 @@ runs:
     - "-rbac-permissions-json"
     - ${{ inputs.rbac_permissions }}
 inputs:
-  ksl_src:
+  ksl:
     description: Path to the KSL project directory for the job
     required: true
   rbac_permissions:
