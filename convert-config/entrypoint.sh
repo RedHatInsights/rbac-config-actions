@@ -13,7 +13,7 @@ if [ -z "${INPUT_TOKEN}" ]; then
 fi
 
 if [ -z "${INPUT_BRANCH_NAME}" ]; then
-   export INPUT_BRANCH_NAME=configmaps
+   export INPUT_BRANCH_NAME=configmaps-schema
 fi
 
 git config --global --add safe.directory ${WORKSPACE}
@@ -65,8 +65,27 @@ objects:
   done
 done
 
+# generate schemas
+# Clone ksl-schema-language repo
+git clone --depth=1 https://github.com/project-kessel/ksl-schema-language.git
+
+# Build KSL compiler binary
+cd ksl-schema-language
+mkdir -p bin/
+go build -gcflags "all=-N -l" -o ./bin/ ./...
+cd ..
+
+# Run KSL compiler
+./ksl-schema-language/bin/ksl -o configs/stage/schemas/schema.zed configs/stage/schemas/src/*.ksl configs/stage/schemas/src/*.json
+./ksl-schema-language/bin/ksl -o configs/prod/schemas/schema.zed configs/prod/schemas/src/*.ksl configs/prod/schemas/src/*.json
+
+# Remove KSL repo & ksil files
+rm -rf ksl-schema-language/
+rm configs/stage/schemas/src/rbac_v1_permissions.json # unsure if this will work/needed.
+rm configs/prod/schemas/src/rbac_v1_permissions.json
+
 # push the changes
 git add .
 timestamp=$(date -u)
-git commit -m "[GitHub] - Automated ConfigMap Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
+git commit -m "[GitHub] - Automated ConfigMap & Schema Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
 git push origin ${INPUT_BRANCH_NAME}
