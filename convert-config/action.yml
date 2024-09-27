@@ -6,6 +6,8 @@ runs:
   args:
     - ${{ inputs.token }}
     - ${{ inputs.branch_name }}
+    - ${{ inputs.ksl_src_stage }}
+    - ${{ inputs.ksl_src_prod }}
 inputs:
   token:
     description: GitHub token
@@ -16,3 +18,9 @@ inputs:
   target_path:
     description: Path where ConfigMaps will be written
     required: false
+  ksl_src_stage:
+    description: Path where source files for generating stage schemas exist
+    required: true
+  ksl_src_prod:
+    description: Path where source files for generating prod schemas exist
+    required: true

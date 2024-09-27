@@ -76,13 +76,14 @@ go build -gcflags "all=-N -l" -o ./bin/ ./...
 cd ..
 
 # Run KSL compiler
-./ksl-schema-language/bin/ksl -o configs/stage/schemas/schema.zed configs/stage/schemas/src/*.ksl configs/stage/schemas/src/*.json
-./ksl-schema-language/bin/ksl -o configs/prod/schemas/schema.zed configs/prod/schemas/src/*.ksl configs/prod/schemas/src/*.json
+
+./ksl-schema-language/bin/ksl -o ${INPUT_KSL_SRC_STAGE}/schema.zed ${INPUT_KSL_SRC_STAGE}/src/*.ksl ${INPUT_KSL_SRC_STAGE}/src/*.json
+./ksl-schema-language/bin/ksl -o ${INPUT_KSL_SRC_PROD}/schema.zed ${INPUT_KSL_SRC_PROD}/src/*.ksl ${INPUT_KSL_SRC_PROD}/src/*.json
 
 # Remove KSL repo & ksil files
 rm -rf ksl-schema-language/
-rm configs/stage/schemas/src/rbac_v1_permissions.json # unsure if this will work/needed.
-rm configs/prod/schemas/src/rbac_v1_permissions.json
+rm ${INPUT_KSL_SRC_STAGE}/src/rbac_v1_permissions.json
+rm ${INPUT_KSL_SRC_PROD}/src/rbac_v1_permissions.json
 
 # push the changes
 git add .
