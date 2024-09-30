@@ -44,5 +44,7 @@ func WriteV1OnlyPermissionsFile(kslPath string, perms []string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
+
 	return intermediate.Store(ns, f)
 }
