@@ -1,5 +1,7 @@
 #!/bin/sh -l
 
+set -e
+
 # generate schemas
 # Clone ksl-schema-language repo
 git clone --depth=1 https://github.com/project-kessel/ksl-schema-language.git
