@@ -1,0 +1,11 @@
+name: RBAC Pre-commit Action
+description: Ensures that underlying ksl files generate a valid schema
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.token }}
+inputs:
+  token:
+    description: GitHub token
+    required: true
