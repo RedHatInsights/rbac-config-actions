@@ -56,6 +56,7 @@ func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]string
 	file := permFile{}
 	json.Unmarshal(data, &file)
 
+	// extract map keys to an array so we can sort them and access values in the map by that order
 	resources := make([]string, 0, len(file))
 	for resource := range file {
 		resources = append(resources, resource)
