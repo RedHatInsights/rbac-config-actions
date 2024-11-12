@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -55,7 +56,15 @@ func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]string
 	file := permFile{}
 	json.Unmarshal(data, &file)
 
-	for resourceName, permissions := range file {
+	// extract map keys to an array so we can sort them and access values in the map by that order
+	resources := make([]string, 0, len(file))
+	for resource := range file {
+		resources = append(resources, resource)
+	}
+	sort.Strings(resources)
+
+	for _, resourceName := range resources {
+		permissions := file[resourceName]
 		for _, permission := range permissions {
 			perms = append(perms, fmt.Sprintf("%s:%s:%s", appName, resourceName, permission.Verb))
 		}
