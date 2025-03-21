@@ -31,16 +31,17 @@ func main() {
 		panic(err)
 	}
 
+	hostsonlyApps, err := v2.GetHostOnlyApps(*kslSrc)
+	if err != nil {
+		panic(err)
+	}
+
 	perms, err := v1.ExtractRBACPermissions(*rbacPermissions, migratedApps)
 	if err != nil {
 		panic(err)
 	}
 
-	for i, perm := range perms {
-		perms[i] = v1PermToV2Perm(perm)
-	}
-
-	v2.WriteV1OnlyPermissionsFile(*kslSrc, perms)
+	v2.WriteV1OnlyPermissionsFile(*kslSrc, hostsonlyApps, perms)
 }
 
 func v1PermToV2Perm(v1Perm string) string {
