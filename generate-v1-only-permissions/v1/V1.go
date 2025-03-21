@@ -2,7 +2,6 @@ package v1
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -10,12 +9,12 @@ import (
 	"strings"
 )
 
-func ExtractRBACPermissions(rbacJSONPath string, skipApps map[string]bool) ([]string, error) {
+func ExtractRBACPermissions(rbacJSONPath string, skipApps map[string]bool) ([]Permission, error) {
 	return extractPermissionsFromFolder(rbacJSONPath, skipApps)
 }
 
-func extractPermissionsFromFolder(path string, skipApps map[string]bool) ([]string, error) {
-	permissions := []string{}
+func extractPermissionsFromFolder(path string, skipApps map[string]bool) ([]Permission, error) {
+	permissions := []Permission{}
 
 	err := filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -38,8 +37,8 @@ func extractPermissionsFromFolder(path string, skipApps map[string]bool) ([]stri
 	return permissions, err
 }
 
-func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]string, error) {
-	perms := []string{}
+func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]Permission, error) {
+	perms := []Permission{}
 
 	fileName := filepath.Base(path)
 	appName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
@@ -66,11 +65,21 @@ func extractPermissionsFromFile(path string, skipApps map[string]bool) ([]string
 	for _, resourceName := range resources {
 		permissions := file[resourceName]
 		for _, permission := range permissions {
-			perms = append(perms, fmt.Sprintf("%s:%s:%s", appName, resourceName, permission.Verb))
+			perms = append(perms, Permission{App: appName, ResourceType: resourceName, Verb: permission.Verb})
 		}
 	}
 
 	return perms, nil
+}
+
+type Permission struct {
+	App          string
+	ResourceType string
+	Verb         string
+}
+
+func (p Permission) IsWildcard() bool {
+	return p.App == "*" || p.ResourceType == "*" || p.Verb == "*"
 }
 
 type perm struct {
