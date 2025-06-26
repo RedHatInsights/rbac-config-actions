@@ -1,4 +1,4 @@
-module github.com/RedHatInsights/rbac-config-actions/generatepermissions
+module github.com/RedHatInsights/rbac-config-actions/generate-v1-only-permissions
 
 go 1.22.2
 
