@@ -87,6 +87,7 @@ rm -rf ksl-schema-language/
 
 # push the changes
 git add .
+git add --force configs/${ENV}/schemas/schema.zed #Override .gitignore
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap & Schema Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
 git push origin ${INPUT_BRANCH_NAME}
