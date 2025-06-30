@@ -72,7 +72,7 @@ git clone --depth=1 https://github.com/project-kessel/ksl-schema-language.git
 # Build KSL compiler binary
 cd ksl-schema-language
 mkdir -p bin/
-go build -gcflags "all=-N -l" -o ./bin/ ./...
+go build -gcflags "all=-N -l" -o ./bin/ ./cmd/ksl/...
 cd ..
 
 # Run KSL compiler
