@@ -4,8 +4,8 @@ import (
 	"flag"
 	"strings"
 
-	v1 "github.com/RedHatInsights/rbac-config-actions/generatepermissions/v1"
-	v2 "github.com/RedHatInsights/rbac-config-actions/generatepermissions/v2"
+	v1 "github.com/RedHatInsights/rbac-config-actions/generate-v1-only-permissions/v1"
+	v2 "github.com/RedHatInsights/rbac-config-actions/generate-v1-only-permissions/v2"
 )
 
 func main() {

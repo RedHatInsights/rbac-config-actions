@@ -14,7 +14,7 @@ WORKDIR /workspace
 COPY . ./
 
 RUN go mod vendor
-RUN go build -o bin/generate-v1-only-permissions main.go
+RUN go build -o bin/generate-v1-only-permissions cmd/generate-v1-only-permissions/main.go
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
 

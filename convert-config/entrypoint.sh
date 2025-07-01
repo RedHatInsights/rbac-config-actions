@@ -72,7 +72,7 @@ git clone --depth=1 https://github.com/project-kessel/ksl-schema-language.git
 # Build KSL compiler binary
 cd ksl-schema-language
 mkdir -p bin/
-go build -gcflags "all=-N -l" -o ./bin/ ./...
+go build -gcflags "all=-N -l" -o ./bin/ ./cmd/ksl/...
 cd ..
 
 # Run KSL compiler
@@ -87,6 +87,7 @@ rm -rf ksl-schema-language/
 
 # push the changes
 git add .
+git add --force configs/${ENV}/schemas/schema.zed #Override .gitignore
 timestamp=$(date -u)
 git commit -m "[GitHub] - Automated ConfigMap & Schema Generation: ${timestamp} - ${GITHUB_SHA}" || exit 0
 git push origin ${INPUT_BRANCH_NAME}
